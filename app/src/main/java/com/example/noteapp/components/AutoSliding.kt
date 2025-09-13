@@ -19,37 +19,43 @@ import kotlinx.coroutines.isActive
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AutoSliding(notes: List<Notes>, onMarkClick:(Notes) -> Unit){
+fun AutoSliding(
+    notes: List<Notes>,
+    onMarkClick: (Notes) -> Unit
+) {
+    if (notes.isEmpty()) {
+        Text("No notes available", modifier = Modifier.fillMaxWidth())
+        return
+    }
+
 
     val listState = rememberLazyListState()
 
-
-
+    // Auto-scroll only if > 1 item
     LaunchedEffect(Unit) {
-        while (isActive){
-            listState.scrollBy(5f)
-            delay(16L)
+        while (isActive) {
+            listState.scrollBy(2f) // smaller value → slower scroll
+            delay(16L)             // 16ms ≈ 60fps
         }
     }
 
-        LazyRow(
-            state = listState,
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(Int.MAX_VALUE) { index ->
-                val item = notes[index % notes.size]
-                if (item.isSave) {
-                    HeroNoteCard(
-                        item,
-                        onMarkClick = {
-                            onMarkClick(item)
-                        }
-                    )
-                }
+    LazyRow(
+        state = listState,
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(Int.MAX_VALUE) { index ->
+            val item = notes[index % notes.size]
+            if (item.isSave) {
+                HeroNoteCard(
+                    item,
+                    onMarkClick = { onMarkClick(item) }
+                )
             }
         }
     }
+}
+
 
 
 

@@ -34,6 +34,9 @@ import com.example.noteapp.MainScreen
 import com.example.noteapp.R
 import com.example.noteapp.model.Notes
 import com.example.noteapp.ui.theme.NoteAppTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun NoteCard(item: Notes, onMarkClick:(Notes) -> Unit = {}){
@@ -102,6 +105,14 @@ fun NoteCard(item: Notes, onMarkClick:(Notes) -> Unit = {}){
                         fontSize = 14.sp
                     )
                 }
+                Spacer(modifier = Modifier
+                    .height(5.dp))
+                Row(
+
+                ) {
+                    Text("${item.createdDate.toFormattedDate()}",
+                        fontSize = 12.sp)
+                }
 
             }
         }
@@ -122,4 +133,10 @@ fun NoteCardPreview() {
             )
         )
     }
+}
+
+fun Long.toFormattedDate(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    return format.format(date)
 }

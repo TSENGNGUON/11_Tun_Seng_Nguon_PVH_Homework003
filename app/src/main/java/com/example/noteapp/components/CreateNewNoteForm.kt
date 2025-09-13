@@ -39,10 +39,13 @@ import com.example.noteapp.ui.theme.NoteAppTheme
 fun PopupScreen(
     onCancelClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
-    showPopup: () -> Unit = {}
+    showPopup: () -> Unit = {},
+    title: String,
+    content: String,
+    onTitleChange: (String) -> Unit,
+    onContentChange: (String) -> Unit,
 ) {
-    var title by remember { mutableStateOf("") }
-    var content by remember { mutableStateOf("") }
+
     val isInputValid = title.isNotBlank() && content.isNotBlank()
 
     Dialog(
@@ -64,7 +67,7 @@ fun PopupScreen(
                 Spacer(modifier = Modifier.height(18.dp))
                 OutlinedTextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = { onTitleChange(it) },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
 
@@ -73,7 +76,7 @@ fun PopupScreen(
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedTextField(
                     value = content,
-                    onValueChange = { content = it },
+                    onValueChange = { onContentChange(it) },
                     label = { Text("Content") },
                     modifier = Modifier.fillMaxWidth()
 
@@ -106,6 +109,7 @@ fun PopupScreen(
                     Button(
                         onClick = {
                             println("Save is clicked")
+                            onSaveClick()
                         },
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent
@@ -135,6 +139,11 @@ fun PopupScreen(
 @Composable
 fun MainScreenPreview() {
     NoteAppTheme {
-        PopupScreen()
+        PopupScreen(
+            title = "",
+            content = "",
+            onTitleChange = {},
+            onContentChange = {}
+        )
     }
 }

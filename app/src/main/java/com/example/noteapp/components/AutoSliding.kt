@@ -24,28 +24,35 @@ import kotlinx.coroutines.isActive
 @Composable
 fun AutoSliding(notes: List<Notes>){
 
-    val listState = rememberLazyListState()
+    if (notes.isEmpty()){
+        val listState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
-        while (isActive) {
-            listState.scrollBy(1f)
-            delay(16L)
+        LaunchedEffect(Unit) {
+            while (isActive) {
+                listState.scrollBy(1f)
+                delay(16L)
+            }
         }
-    }
 
-    LazyRow(
-        state = listState,
-        modifier = Modifier.fillMaxWidth(),
+        LazyRow(
+            state = listState,
+            modifier = Modifier.fillMaxWidth(),
 //        userScrollEnabled = false
-    ) {
-        items(Int.MAX_VALUE){
-            item ->
-            val item = notes[item % notes.size]
-            Spacer(modifier = Modifier.width(15.dp))
-            HeroNoteCard(item)
-        }
+        ) {
+            items(Int.MAX_VALUE){
+                    item ->
+                val item = notes[item % notes.size]
+                Spacer(modifier = Modifier.width(15.dp))
+                HeroNoteCard(item)
+            }
 
+        }
     }
+
+
+
+
+
 
 
 }

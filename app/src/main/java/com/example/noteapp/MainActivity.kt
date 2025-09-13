@@ -40,9 +40,11 @@ import androidx.compose.material3.*
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,13 +56,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import com.example.noteapp.components.AutoSliding
 import com.example.noteapp.components.DeleAllNoteScreen
 import com.example.noteapp.components.NoteCard
 import com.example.noteapp.components.PopupScreen
+import com.example.noteapp.database.NotesDatabase
 import com.example.noteapp.model.Notes
+import com.example.noteapp.repository.NotesRepository
 import com.example.noteapp.ui.theme.NoteAppTheme
 import com.example.noteapp.viewmodel.NotesViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -69,9 +75,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val database = NotesDatabase.getDatabase(applicationContext)
+        val repository = NotesRepository(database.notesDao())
+        val viewModel = ViewModelProvider(this, NoteViewModelFactory(repository))[NotesViewModel::class.java]
+
         setContent {
             NoteAppTheme {
-                MainScreen()
+                MainScreen(viewModel)
             }
         }
     }
@@ -79,36 +89,18 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: NotesViewModel) {
     val borderCorner = 50.dp
     val borderWidth = 2.dp
     val borderColor = Color.Gray
-//
-//    val notes = mutableListOf<Notes>(
-//        Notes(
-//            1, "Notes App",
-//            "adipiscing elit. Nullam mattis fringilla",
-//            R.drawable.tanchiro,
-//            isSave = true
-//        ),
-//        Notes(
-//            2, "Notes App",
-//            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mattis fringilla",
-//            R.drawable.demon_slayer_fire,
-//            isSave = false
-//        ),
-//        Notes(
-//            3, "Notes App",
-//            "Lorem ipsum dolor sit amet, consectetur ",
-//            R.drawable.tomioka,
-//            isSave = false
-//        ),
-//
-//
-//        )
 
+    val notes by viewModel.allNotes.collectAsState(initial = emptyList())
+    val scope = rememberCoroutineScope()
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
     var showPopup by remember { mutableStateOf(false) }
     var showDeletePopup by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier =
@@ -161,6 +153,9 @@ fun MainScreen() {
                         IconButton(
                             onClick = {
                                 showDeletePopup = true
+                                scope.launch {
+                                    viewModel.delete(allNotes = notes)
+                                }
                             },
                             modifier = Modifier
                                 .background(
@@ -189,7 +184,7 @@ fun MainScreen() {
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-                AutoSliding(NotesViewModel().notes)
+//                AutoSliding(notes)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -200,15 +195,12 @@ fun MainScreen() {
 
                 ) {
 
-                    items(NotesViewModel().notes){
+                    items(notes){
                             note ->
                         NoteCard(
                             note
 
-                        ){
-                            clickedNote ->
-                            NotesViewModel().toggleSave(clickedNote)
-                        }
+                        )
                     }
                 }
 
@@ -231,7 +223,26 @@ fun MainScreen() {
                 PopupScreen(
                     showPopup = {
                         showPopup = false
+                    },
+                    title = title,
+                    content = content,
+                    onTitleChange = {
+                        newTitle -> title = newTitle
+                    },
+                    onContentChange = {
+                        newContent -> content = newContent
+                    },
+                    onSaveClick = {
+                        scope.launch {
+                            viewModel.insert(
+                                Notes(
+                                    title = title,
+                                    content = content,
+                                )
+                            )
+                        }
                     }
+
                 )
             }
 
@@ -264,6 +275,8 @@ fun MainScreen() {
 @Composable
 fun MainScreenPreview() {
     NoteAppTheme {
-        MainScreen()
+        MainScreen(
+            viewModel = TODO()
+        )
     }
 }

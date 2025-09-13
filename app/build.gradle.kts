@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
 }
 
 android {
@@ -41,6 +42,17 @@ android {
 
 dependencies {
 
+    val  room_version = "2.6.1" // Change this to the latest stable version
+    implementation ("androidx.room:room-runtime:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version") // Make sure this is 'kapt'
+    // Other dependencies
+    implementation( "androidx.core:core-ktx:1.9.0") // Check for latest
+    implementation( "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1" )// Check for latest
+    implementation( "androidx.activity:activity-compose:1.7.0") // Check for latest
+    implementation ("androidx.compose.ui:ui")
+    implementation ("androidx.compose.ui:ui-tooling-preview")
+    implementation ("androidx.compose.material3:material3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,5 +1,6 @@
 package com.example.noteapp.components
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +36,10 @@ import com.example.noteapp.model.Notes
 import com.example.noteapp.ui.theme.NoteAppTheme
 
 @Composable
-fun HeroNoteCard(item: Notes){
+fun HeroNoteCard(
+    item: Notes,
+    onMarkClick:(Notes) -> Unit 
+){
     Card(
         modifier = Modifier
             .width(350.dp)
@@ -53,7 +58,7 @@ fun HeroNoteCard(item: Notes){
             horizontalArrangement = Arrangement.Center,
         ) {
             Image(
-                painter = painterResource(id = (item.imagesReId!!.toInt())),
+                painter = painterResource(id = item.imagesReId ?: R.drawable.demon_slayer),
                 contentDescription = null,
                 modifier = Modifier.size(100.dp)
             )
@@ -77,11 +82,26 @@ fun HeroNoteCard(item: Notes){
                         text = "${item.title}",
                         fontWeight = FontWeight.Medium
                     )
-                    Icon(
-                        painter = painterResource(id = R.drawable.mark),
-                        contentDescription = null,
-                        tint = Color(0xFFFF8B8D),
-                    )
+                    IconButton(
+                        onClick = {
+                            onMarkClick(item)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (item.isSave){
+                                    R.drawable.mark
+                                } else{
+                                    R.drawable.unsave
+                                }
+
+
+                            ),
+                            contentDescription = null,
+                            tint = if (item.isSave) Color(0xFFFF8B8D) else Color.Gray
+
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier
                     .height(5.dp))
@@ -109,10 +129,11 @@ fun HeroCardPreview() {
     NoteAppTheme {
         HeroNoteCard(
             Notes(
-                1,"Notes App",
+                1, "Notes App",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mattis fringilla",
                 R.drawable.demon_slayer
-            )
+            ),
+            onMarkClick = {}
         )
     }
 }

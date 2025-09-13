@@ -76,10 +76,10 @@ fun NoteCard(item: Notes, onMarkClick:(Notes) -> Unit = {}){
                         Icon(
                             painter = painterResource(
                                 id = if (item.isSave){
-                                    Log.d("NoteCard", "Note ${item.id} isSave=true")
+
                                     R.drawable.mark
                                 } else{
-                                    Log.d("NoteCard", "Note ${item.id} isSave=false")
+
                                     R.drawable.unsave
                                 }
 

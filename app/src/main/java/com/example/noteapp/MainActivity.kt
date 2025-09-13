@@ -46,7 +46,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import com.example.noteapp.components.AutoSliding
 import com.example.noteapp.components.DeleAllNoteScreen
+import com.example.noteapp.components.HeroNoteCard
 import com.example.noteapp.components.NoteCard
 import com.example.noteapp.components.PopupScreen
 import com.example.noteapp.database.NotesDatabase
@@ -88,6 +90,14 @@ fun MainScreen(viewModel: NotesViewModel) {
     var content by remember { mutableStateOf("") }
     var showPopup by remember { mutableStateOf(false) }
     var showDeletePopup by remember { mutableStateOf(false) }
+
+    val defaultImages = listOf(
+        R.drawable.demon_slayer,
+        R.drawable.demon_slayer_fire,
+        R.drawable.tomioka,
+    )
+
+    val randomImage = defaultImages.random()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -170,7 +180,12 @@ fun MainScreen(viewModel: NotesViewModel) {
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-//                AutoSliding(notes)
+                AutoSliding(notes, onMarkClick = {
+                    scope.launch {
+                        viewModel.update(it.copy(isSave = !it.isSave))
+                    }
+                })
+
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -229,6 +244,7 @@ fun MainScreen(viewModel: NotesViewModel) {
                                 Notes(
                                     title = title,
                                     content = content,
+                                    imagesReId = randomImage
                                 )
                                 ,
                             )

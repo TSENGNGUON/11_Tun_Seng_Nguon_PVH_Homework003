@@ -10,7 +10,7 @@ data class Notes(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val content: String,
-    @DrawableRes val imagesReId: Int ?= null,
+    @DrawableRes val imagesReId: Int,
     val isSave: Boolean = false
 )
 

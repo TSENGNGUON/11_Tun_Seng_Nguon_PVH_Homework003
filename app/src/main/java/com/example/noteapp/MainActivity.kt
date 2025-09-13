@@ -237,9 +237,13 @@ fun MainScreen(viewModel: NotesViewModel) {
                                     title = title,
                                     content = content,
                                 )
+                                ,
                             )
+                            title = ""
+                            content = ""
                             showPopup = false
                         }
+
                     }
 
                 )

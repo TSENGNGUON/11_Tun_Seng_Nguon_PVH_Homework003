@@ -1,5 +1,6 @@
 package com.example.noteapp.components
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +36,7 @@ import com.example.noteapp.model.Notes
 import com.example.noteapp.ui.theme.NoteAppTheme
 
 @Composable
-fun NoteCard(item: Notes, onSavedClick:(Notes) -> Unit = {}){
+fun NoteCard(item: Notes, onMarkClick:(Notes) -> Unit = {}){
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -69,13 +70,23 @@ fun NoteCard(item: Notes, onSavedClick:(Notes) -> Unit = {}){
                     )
                     IconButton(
                         onClick = {
-                                onSavedClick(item)
+                                onMarkClick(item)
                         }
                     ) {
                         Icon(
-                            painter = painterResource(id = if (item.isSave) R.drawable.mark else R.drawable.unsave),
+                            painter = painterResource(
+                                id = if (item.isSave){
+                                    Log.d("NoteCard", "Note ${item.id} isSave=true")
+                                    R.drawable.mark
+                                } else{
+                                    Log.d("NoteCard", "Note ${item.id} isSave=false")
+                                    R.drawable.unsave
+                                }
+
+
+                               ),
                             contentDescription = null,
-                            tint = Color(0xFFFF8B8D),
+                            tint = if (item.isSave) Color(0xFFFF8B8D) else Color.Gray
 
                             )
                     }

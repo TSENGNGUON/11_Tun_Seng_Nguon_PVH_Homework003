@@ -8,7 +8,7 @@ import com.example.noteapp.dao.NotesDao
 import com.example.noteapp.model.Notes
 
 
-@Database(entities = [Notes::class], version = 2, exportSchema = false)
+@Database(entities = [Notes::class], version = 4, exportSchema = false)
 abstract class NotesDatabase  : RoomDatabase(){
     abstract fun notesDao(): NotesDao
 

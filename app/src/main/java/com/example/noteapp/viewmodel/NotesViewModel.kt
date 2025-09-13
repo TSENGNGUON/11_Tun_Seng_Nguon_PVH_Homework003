@@ -1,5 +1,6 @@
 package com.example.noteapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,11 +10,11 @@ import com.example.noteapp.repository.NotesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class NotesViewModel(
+open class NotesViewModel(
     private val repository: NotesRepository
 ): ViewModel() {
 
-    val allNotes = repository.allNotes
+    open val allNotes = repository.allNotes
 
 
     fun insert(note: Notes){
@@ -24,6 +25,7 @@ class NotesViewModel(
 
     fun update(note: Notes){
         viewModelScope.launch {
+            Log.d("NotesViewModel", "Updating note ${note.id} isSave=${note.isSave}")
             repository.update(note)
         }
     }

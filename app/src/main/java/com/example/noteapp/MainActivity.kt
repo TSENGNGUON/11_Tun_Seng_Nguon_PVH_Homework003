@@ -153,9 +153,7 @@ fun MainScreen(viewModel: NotesViewModel) {
                         IconButton(
                             onClick = {
                                 showDeletePopup = true
-                                scope.launch {
-                                    viewModel.delete(allNotes = notes)
-                                }
+
                             },
                             modifier = Modifier
                                 .background(
@@ -240,6 +238,7 @@ fun MainScreen(viewModel: NotesViewModel) {
                                     content = content,
                                 )
                             )
+                            showPopup = false
                         }
                     }
 
@@ -264,6 +263,12 @@ fun MainScreen(viewModel: NotesViewModel) {
                     },
                     onCancelClick = {
                         showDeletePopup = false
+                    },
+                    onDeleteClick = {
+                        scope.launch {
+                            viewModel.delete(allNotes = notes)
+                            showDeletePopup = false
+                        }
                     }
                 )
             }

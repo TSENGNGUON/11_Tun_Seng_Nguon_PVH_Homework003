@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,10 +40,19 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun NoteCard(item: Notes, onMarkClick:(Notes) -> Unit = {}){
+fun NoteCard(
+    item: Notes,
+    onMarkClick:(Notes) -> Unit = {},
+    onCardClick : () -> Unit = {}
+){
     Card(
         modifier = Modifier
             .padding(10.dp)
+            .clickable(
+                onClick = {
+                    onCardClick()
+                }
+            )
             .border(
                 BorderStroke(1.dp, Color.Gray.copy(alpha = 0.2f)),
                 shape = RoundedCornerShape(16.dp)

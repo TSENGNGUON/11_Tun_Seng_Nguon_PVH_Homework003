@@ -12,7 +12,8 @@ data class Notes(
     val content: String,
     @DrawableRes val imagesReId: Int,
     val isSave: Boolean = false,
-    val createdDate: Long = System.currentTimeMillis() // store as timestamp
+    val createdDate: Long = System.currentTimeMillis() ,
+    val isEdit: Boolean = false
 )
 
 
